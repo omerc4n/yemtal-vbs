@@ -1,0 +1,898 @@
+<!DOCTYPE html><html lang="tr"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YEMTAL-VBS — Veli Bilgilendirme Sistemi</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'navy': '#1E3A8A',
+        'emerald': '#10B981',
+        'teal': '#0D9488',
+        'amber': '#D97706',
+        'crimson': '#DC2626',
+        'light-primary': '#1E3A8A',
+        'light-on-primary': '#FFFFFF',
+        'light-secondary': '#10B981',
+        'light-on-secondary': '#393939',
+        'light-tertiary': '#0D9488',
+        'light-on-tertiary': '#1D1D1D',
+        'light-surface': '#FFFFFF',
+        'light-on-surface': '#0F172A',
+        'light-surface-variant': '#F1F5F9',
+        'light-on-surface-variant': '#475569',
+        'light-background': '#F8FAFC',
+        'light-on-background': '#0F172A',
+        'light-outline': '#E2E8F0',
+        'light-outline-variant': '#CBD5E1',
+        'light-error': '#DC2626',
+        'light-on-error': '#FFFFFF',
+        'dark-primary': '#93C5FD',
+        'dark-on-primary': '#1E3A8A',
+        'dark-secondary': '#6EE7B7',
+        'dark-on-secondary': '#064E3B',
+        'dark-tertiary': '#5EEAD4',
+        'dark-on-tertiary': '#134E4A',
+        'dark-surface': '#0F172A',
+        'dark-on-surface': '#F8FAFC',
+        'dark-surface-variant': '#1E293B',
+        'dark-on-surface-variant': '#94A3B8',
+        'dark-background': '#020617',
+        'dark-on-background': '#F8FAFC',
+        'dark-outline': '#334155',
+        'dark-outline-variant': '#475569',
+        'dark-error': '#F87171',
+        'dark-on-error': '#450A0A',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '8px',
+        'md': '10px',
+        'lg': '12px',
+        'xl': '16px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '40px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Wix Madefor Display"', 'sans-serif'],
+        'headline': ['"Wix Madefor Display"', 'sans-serif'],
+        'title': ['"Instrument Sans"', 'sans-serif'],
+        'body': ['"Instrument Sans"', 'sans-serif'],
+        'label': ['"Instrument Sans"', 'sans-serif'],
+        'code': ['"Red Hat Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['36px', { lineHeight: '44px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'display-lg-mobile': ['28px', { lineHeight: '36px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-lg': ['28px', { lineHeight: '36px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-md': ['22px', { lineHeight: '30px', letterSpacing: '-0.15px', fontWeight: '600' }],
+        'headline-sm': ['18px', { lineHeight: '26px', fontWeight: '600' }],
+        'title-lg': ['18px', { lineHeight: '26px', fontWeight: '600' }],
+        'title-md': ['16px', { lineHeight: '24px', fontWeight: '600' }],
+        'title-sm': ['14px', { lineHeight: '20px', fontWeight: '600' }],
+        'body-lg': ['16px', { lineHeight: '24px', fontWeight: '400' }],
+        'body-md': ['14px', { lineHeight: '20px', fontWeight: '400' }],
+        'body-sm': ['12px', { lineHeight: '18px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0.1px', fontWeight: '600' }],
+        'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.2px', fontWeight: '600' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.3px', fontWeight: '600' }],
+        'code-md': ['13px', { lineHeight: '18px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '150ms',
+        'surface-enter': '200ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'surface-enter': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'surface-enter': 'cubic-bezier(0.16, 1, 0.3, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@600;700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=Red+Hat+Mono:wght@500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      line-height: 1 !important;
+      box-sizing: content-box;
+      overflow: hidden;
+      white-space: nowrap;
+      direction: ltr;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body class="bg-light-background text-light-on-background font-body min-h-[1024px] antialiased flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+  <!-- Main Administrative Layout Wrapper -->
+  <div class="flex min-h-[1024px] w-full" data-stitch-vh="min-h-[1024px]===min-h-screen">
+    
+    <!-- 1. Left Sidebar (Navigation & Status) -->
+    <aside class="w-80 flex-shrink-0 bg-light-surface border-r border-light-outline flex flex-col justify-between min-h-[1024px]" data-stitch-vh="min-h-[1024px]===min-h-screen">
+      
+      <!-- Top Section: Brand + Status Badges + Navigation (Otomasyon & Manuel Grupları) -->
+      <div class="p-5 flex flex-col gap-5">
+        
+        <!-- Brand Header: School Icon + YEMTAL-VBS -->
+        <div class="flex items-center gap-3 pb-3 border-b border-light-outline">
+          <div class="w-10 h-10 rounded-lg bg-navy flex items-center justify-center text-white shadow-sm flex-shrink-0">
+            <span class="material-symbols-outlined text-[24px]">school</span>
+          </div>
+          <div class="flex flex-col min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span class="font-headline font-bold text-headline-sm text-navy tracking-tight">YEMTAL-VBS</span>
+            </div>
+            <span class="font-body text-body-sm text-light-on-surface-variant truncate">Veli Bilgilendirme Sistemi</span>
+          </div>
+        </div>
+
+        <!-- Compact Status Badges Stacked at Top of Sidebar -->
+        <div class="flex flex-col gap-2">
+          <!-- Kurum Kodu Badge -->
+          <div data-component-id="badge-status-blue" data-component-type="badge" data-component-variant="status" class="flex items-center justify-between px-3 py-1.5 rounded-md bg-blue-50/80 border border-blue-200 text-navy">
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-navy text-[15px]">account_balance</span>
+              <span class="font-body text-xs font-medium text-slate-700">Kurum Kodu:</span>
+            </div>
+            <span data-design-text-token="code-md" class="font-code text-xs font-bold text-navy">YEMTAL-01</span>
+          </div>
+
+          <!-- Netgsm SMS Kredisi Badge -->
+          <div data-component-id="badge-status-emerald" data-component-type="badge" data-component-variant="status" class="flex items-center justify-between px-3 py-1.5 rounded-md bg-emerald-50/90 border border-emerald-200 text-emerald-900">
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-emerald text-[15px]">sms</span>
+              <span class="font-body text-xs font-medium text-emerald-900">Netgsm SMS:</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span data-design-text-token="code-md" class="font-code text-xs font-bold text-emerald-800 tabular-nums">4.250</span>
+              <span class="font-body text-[11px] text-emerald-700">Adet</span>
+            </div>
+          </div>
+
+          <!-- e-Okul Eklentisi Badge -->
+          <div data-component-id="badge-status-teal" data-component-type="badge" data-component-variant="status" class="flex items-center justify-between px-3 py-1.5 rounded-md bg-teal-50/90 border border-teal-200 text-teal-900">
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-teal text-[15px]">extension</span>
+              <span class="font-body text-xs font-medium text-teal-900">e-Okul Eklentisi:</span>
+            </div>
+            <span data-design-text-token="code-md" class="font-code text-xs font-semibold text-teal-800 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-teal animate-pulse"></span>
+              Aktif
+            </span>
+          </div>
+        </div>
+
+        <!-- Navigation Menu Divided into OTOMASYON & MANUEL -->
+        <nav aria-label="Ana Menü" class="flex flex-col gap-4 pt-1">
+          
+          <!-- BÖLÜM 1: OTOMASYON İŞLEMLERİ -->
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between px-2 mb-0.5">
+              <span class="font-label text-[11px] text-teal-800 font-bold tracking-wider uppercase flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-teal"></span>
+                Otomasyon İşlemleri
+              </span>
+              <span class="text-[10px] font-semibold bg-teal-100 text-teal-800 px-1.5 py-0.2 rounded border border-teal-200">Robotik</span>
+            </div>
+
+            <!-- Devamsızlık e-Okul Otomasyonu -->
+            <a href="#devamsizlik-otomasyon" class="flex items-center justify-between px-3 py-2 rounded-lg bg-teal-50/80 border border-teal-200 text-teal-950 font-title text-title-sm font-semibold transition-state-change hover:bg-teal-100/70">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-teal text-[19px]">bolt</span>
+                <span>Devamsızlık e-Okul Otomasyon</span>
+              </div>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                18 Bekleyen
+              </span>
+            </a>
+
+            <!-- e-Okul Öğrenci Listesi Çekme -->
+            <a href="#ogrenci-listesi-cek" class="flex items-center justify-between px-3 py-2 rounded-lg text-slate-700 hover:text-navy hover:bg-slate-100 transition-state-change font-title text-title-sm font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-navy text-[19px]">cloud_download</span>
+                <span>e-Okul Öğrenci Listesi Çek</span>
+              </div>
+              <span class="material-symbols-outlined text-slate-400 text-[16px]">sync</span>
+            </a>
+
+            <!-- Sınıflar Oto Mesaj Kategori -->
+            <a href="#siniflar-oto-mesaj" class="flex items-center justify-between px-3 py-2 rounded-lg text-slate-700 hover:text-navy hover:bg-slate-100 transition-state-change font-title text-title-sm font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-navy text-[19px]">schedule_send</span>
+                <span>Sınıflar Oto Mesaj (Zamanlı)</span>
+              </div>
+              <span class="text-[11px] font-code text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">12 Şube</span>
+            </a>
+          </div>
+
+          <!-- BÖLÜM 2: MANUEL İŞLEMLER -->
+          <div class="flex flex-col gap-1.5">
+            <span class="font-label text-[11px] text-slate-500 font-bold tracking-wider uppercase px-2 mb-0.5 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+              Manuel Gönderim &amp; Yönetim
+            </span>
+
+            <!-- Mesaj Gönder: Manuel Expanded Accordion Menu -->
+            <div class="flex flex-col rounded-lg border border-blue-200 bg-blue-50/40 overflow-hidden">
+              <button type="button" id="accordion-toggle" aria-expanded="true" class="w-full flex items-center justify-between px-3 py-2 bg-blue-100/60 text-navy font-title text-title-sm font-semibold transition-state-change hover:bg-blue-100">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-navy text-[18px]">chat</span>
+                  <span data-design-text-token="title-sm">Manuel Mesaj Gönder</span>
+                </div>
+                <span class="material-symbols-outlined text-navy text-[18px] transition-transform duration-200" id="accordion-icon">expand_more</span>
+              </button>
+
+              <div id="accordion-menu" class="flex flex-col py-1 px-1.5 gap-0.5 bg-white/70">
+                <a href="#sinifli-mesaj" class="flex items-center gap-2 px-2.5 py-1.5 rounded-md font-body text-xs font-semibold text-navy bg-blue-50/80 border-l-2 border-navy transition-state-change">
+                  <span class="w-1.5 h-1.5 rounded-full bg-navy"></span>
+                  <span>Sınıflı Mesaj Gönder</span>
+                </a>
+                <a href="#secimli-mesaj" class="flex items-center gap-2 px-2.5 py-1.5 rounded-md font-body text-xs text-slate-700 hover:bg-slate-100 hover:text-navy transition-state-change">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                  <span>Seçimli Mesaj Gönder</span>
+                </a>
+                <a href="#okul-no-sms" class="flex items-center gap-2 px-2.5 py-1.5 rounded-md font-body text-xs text-slate-700 hover:bg-slate-100 hover:text-navy transition-state-change">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                  <span>Okul No ile SMS</span>
+                </a>
+                <a href="#telefon-no-sms" class="flex items-center gap-2 px-2.5 py-1.5 rounded-md font-body text-xs text-slate-700 hover:bg-slate-100 hover:text-navy transition-state-change">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                  <span>Telefon No Girerek SMS</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Rehberim (Parent Directory) -->
+            <a href="#rehberim" class="flex items-center justify-between px-3 py-2 rounded-lg text-slate-700 hover:text-navy hover:bg-slate-100 transition-state-change font-title text-title-sm font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-slate-600 text-[19px]">contacts</span>
+                <span>Rehberim (Manuel Düzenleme)</span>
+              </div>
+              <span class="font-code text-xs text-slate-500 font-medium bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">840</span>
+            </a>
+
+            <!-- Ayarlar (Netgsm API & System Settings) -->
+            <a href="#ayarlar" class="flex items-center justify-between px-3 py-2 rounded-lg text-slate-700 hover:text-navy hover:bg-slate-100 transition-state-change font-title text-title-sm font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-slate-600 text-[19px]">tune</span>
+                <span>Netgsm &amp; Sistem Ayarları</span>
+              </div>
+              <span class="font-body text-[11px] text-slate-400">API</span>
+            </a>
+          </div>
+
+        </nav>
+      </div>
+
+      <!-- Bottom User/School Status Pill in Sidebar -->
+      <div class="p-3.5 border-t border-light-outline bg-slate-50/70 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-blue-100 text-navy flex items-center justify-center font-bold text-xs">
+            YP
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="font-title text-xs text-slate-900 truncate font-semibold">İdare Paneli</span>
+            <span class="font-body text-[11px] text-slate-500">Yetkili Yönetici</span>
+          </div>
+        </div>
+        <button type="button" title="Çıkış Yap" class="text-slate-400 hover:text-crimson p-1.5 rounded transition-state-change">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- 2. Main Content Area (Dashboard Overview) -->
+    <main class="flex-1 flex flex-col min-w-0 bg-light-background">
+      
+      <!-- Top Global Bar -->
+      <header class="h-16 px-8 bg-light-surface border-b border-light-outline flex items-center justify-between sticky top-0 z-10 shadow-xs">
+        <div class="flex items-center gap-3">
+          <h1 class="font-headline font-bold text-headline-sm text-slate-900">YEMTAL Yönetim &amp; Otomasyon Paneli</h1>
+          <span class="text-slate-300">|</span>
+          <div class="flex items-center gap-2 text-slate-600 font-body text-body-sm">
+            <span class="material-symbols-outlined text-slate-400 text-[18px]">calendar_today</span>
+            <span>2026-2027 Eğitim Öğretim Yılı</span>
+          </div>
+        </div>
+
+        <!-- Global Action & Sync Telemetry -->
+        <div class="flex items-center gap-3">
+          <!-- Otomasyon Robot Modu Durumu -->
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200 text-teal-900 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-teal animate-ping"></span>
+            <span>e-Okul Robotu: Hazır</span>
+          </div>
+
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-body border border-slate-200">
+            <span class="w-2 h-2 rounded-full bg-emerald"></span>
+            <span>Netgsm API: Onaylı</span>
+          </div>
+
+          <button type="button" class="flex items-center gap-1.5 px-3.5 py-2 bg-light-surface border border-light-outline hover:bg-slate-50 rounded-md text-slate-700 font-title text-title-sm shadow-sm transition-state-change">
+            <span class="material-symbols-outlined text-[18px] text-navy">refresh</span>
+            <span>Verileri Güncelle</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard Content Container -->
+      <div class="p-8 max-w-7xl w-full mx-auto flex flex-col gap-6">
+
+        <!-- Top Card: "Rehber Detayları" (Directory Summary) with clean red/navy accent header -->
+        <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="bg-light-surface rounded-xl border border-light-outline shadow-sm overflow-hidden">
+          <!-- Card Header with clean accent bar and split title -->
+          <div class="px-6 py-4 border-b border-light-outline flex items-center justify-between bg-white">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-navy">
+                <span class="material-symbols-outlined text-[18px]">groups</span>
+              </div>
+              <div>
+                <h2 data-design-text-token="title-md" class="font-title text-title-md text-navy font-bold flex items-center gap-2">
+                  Rehber Detayları &amp; İletişim Havuzu
+                  <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">e-Okul Senkronize</span>
+                </h2>
+                <p class="font-body text-body-sm text-slate-500">Öğrenci ve Veli İletişim Numaraları Özet Raporu</p>
+              </div>
+            </div>
+
+            <!-- Top Right Timestamp Badge -->
+            <div class="flex items-center gap-1 text-xs text-slate-500 font-body">
+              <span class="material-symbols-outlined text-[14px]">schedule</span>
+              <span>Son senkronizasyon: Bugün 09:15</span>
+            </div>
+          </div>
+
+          <!-- Split into Two Columns: Left (Valid Records) & Right (Missing/Warning Records) -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-light-outline">
+            
+            <!-- Left Column: Valid Registered Parents & Students -->
+            <div class="p-6 flex flex-col justify-between gap-6 bg-white">
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <span class="font-title text-title-sm text-navy font-semibold flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-navy text-[18px]">check_circle</span>
+                    Kayıtlı ve Onaylı Rehber Verileri
+                  </span>
+                  <span class="text-xs text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">%99.0 İletişim</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <!-- Metric: Toplam Kayıtlı Öğrenci: 840 -->
+                  <div class="p-4 rounded-lg bg-slate-50/70 border border-slate-200/80 flex flex-col">
+                    <span class="font-body text-body-sm text-slate-600 mb-1">Toplam Kayıtlı Öğrenci</span>
+                    <div class="flex items-baseline gap-2">
+                      <span class="font-headline font-bold text-display-lg text-navy tracking-tight tabular-nums">840</span>
+                      <span class="font-body text-xs text-slate-500">Öğrenci</span>
+                    </div>
+                  </div>
+
+                  <!-- Metric: Kayıtlı Veli Numarası: 832 -->
+                  <div class="p-4 rounded-lg bg-emerald-50/50 border border-emerald-200/80 flex flex-col">
+                    <span class="font-body text-body-sm text-emerald-900 mb-1">Kayıtlı Veli Numarası</span>
+                    <div class="flex items-baseline gap-2">
+                      <span class="font-headline font-bold text-display-lg text-emerald-900 tracking-tight tabular-nums">832</span>
+                      <span class="font-body text-xs text-emerald-800">Numara</span>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="font-body text-body-sm text-slate-600">
+                  Otomasyon ve manuel SMS gönderimleri için hazır, e-Okul sisteminden içe aktarılmış aktif veli numaraları.
+                </p>
+              </div>
+
+              <!-- Primary Blue Button: "REHBERE GİT" -->
+              <div class="pt-2">
+                <a href="#rehbere-git" data-component-id="button-primary" data-component-type="button" data-component-variant="primary" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-navy text-white rounded-md font-label text-label-lg shadow-sm hover:bg-blue-900 active:scale-[0.98] transition-state-change">
+                  <span class="material-symbols-outlined text-[18px]">menu_book</span>
+                  <span data-design-text-token="label-lg">REHBERE GİT</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Right Column: Warning & Incomplete Data -->
+            <div class="p-6 flex flex-col justify-between gap-6 bg-slate-50/40">
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                  <span class="font-title text-title-sm text-crimson font-semibold flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-crimson text-[18px]">warning</span>
+                    Eksik ve Güncelleme Gereken Bilgiler
+                  </span>
+                  <span class="text-xs text-crimson font-semibold bg-red-50 px-2 py-0.5 rounded border border-red-200">Dikkat</span>
+                </div>
+
+                <!-- Warning Stats Stack -->
+                <div class="flex flex-col gap-2.5">
+                  
+                  <!-- Telefon Numarası Olmayan Kayıt: 8 (Warning Text) -->
+                  <div class="flex items-center justify-between p-3 rounded-lg bg-red-50/70 border border-red-200">
+                    <div class="flex items-center gap-2.5">
+                      <span class="material-symbols-outlined text-crimson text-[20px]">phone_disabled</span>
+                      <span class="font-title text-title-sm text-red-950 font-semibold">Telefon Numarası Olmayan Kayıt</span>
+                    </div>
+                    <span class="font-headline font-bold text-headline-sm text-crimson tabular-nums">8</span>
+                  </div>
+
+                  <!-- 1. Veli Numarası Eksik: 8 -->
+                  <div class="flex items-center justify-between p-2.5 rounded-lg bg-white border border-slate-200">
+                    <div class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-amber text-[18px]">contact_phone</span>
+                      <span class="font-body text-body-sm text-slate-700">1. Veli Numarası Eksik</span>
+                    </div>
+                    <span class="font-code text-code-md font-bold text-amber-700 tabular-nums">8 Öğrenci</span>
+                  </div>
+
+                  <!-- 2. Veli Numarası Eksik: 45 -->
+                  <div class="flex items-center justify-between p-2.5 rounded-lg bg-white border border-slate-200">
+                    <div class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-slate-400 text-[18px]">group_add</span>
+                      <span class="font-body text-body-sm text-slate-700">2. Veli Numarası Eksik</span>
+                    </div>
+                    <span class="font-code text-code-md font-bold text-slate-600 tabular-nums">45 Öğrenci</span>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Outline Button: "EKSİKLERİ GÖR" -->
+              <div class="pt-2">
+                <a href="#eksikleri-gor" data-component-id="button-outlined" data-component-type="button" data-component-variant="outlined" class="inline-flex items-center justify-center gap-2 px-4 py-2 border border-slate-300 bg-white text-slate-800 rounded-md font-label text-label-md hover:bg-slate-50 hover:border-slate-400 transition-state-change shadow-sm">
+                  <span class="material-symbols-outlined text-[16px] text-crimson">error_outline</span>
+                  <span data-design-text-token="label-md">EKSİKLERİ GÖR</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </article>
+
+        <!-- Middle Quick Action Banner: "e-Okul Devamsızlık Senkronizasyonu" -->
+        <section data-component-id="card-action" data-component-type="card" data-component-variant="action" aria-labelledby="banner-heading" class="rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50/90 via-teal-50/50 to-white p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <span class="material-symbols-outlined text-[28px]">bolt</span>
+            </div>
+            
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center gap-2.5">
+                <h2 id="banner-heading" data-design-text-token="headline-sm" class="font-headline font-bold text-headline-sm text-slate-900">
+                  e-Okul Devamsızlık Otomasyonu &amp; Anlık Senkronizasyon
+                </h2>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                  Otomatik Eşleşme
+                </span>
+              </div>
+              <p data-design-text-token="body-md" class="font-body text-body-md text-slate-700">
+                Bugün e-Okul sisteminden otomatik çekilen <strong class="font-semibold text-emerald-900">18 devamsız öğrenci</strong> velilerine SMS gönderilmek üzere hazır bekliyor.
+              </p>
+            </div>
+          </div>
+
+          <!-- Green Action Button: "Devamsızlık SMS Ekranına Git" -->
+          <div class="flex-shrink-0">
+            <a href="#devamsizlik-sms-ekrani" data-component-id="button-primary-emerald" data-component-type="button" data-component-variant="primary" class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-emerald text-white rounded-lg font-label text-label-lg shadow-sm hover:opacity-95 active:scale-[0.98] transition-state-change">
+              <span class="material-symbols-outlined text-[20px]">send</span>
+              <span data-design-text-token="label-lg">Devamsızlık SMS Ekranına Git</span>
+            </a>
+          </div>
+        </section>
+
+        <!-- 3-Column Info Grid: Kurum Profili, e-Okul Entegrasyon Rehberi, Sistem Duyuruları -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          
+          <!-- Left Card: School Profile card -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="bg-light-surface rounded-xl border border-light-outline p-6 shadow-sm flex flex-col justify-between gap-5 h-full">
+            <div>
+              <header class="flex items-center justify-between pb-3 border-b border-light-outline mb-4">
+                <span class="font-label text-label-sm text-slate-500 uppercase tracking-wider font-semibold">Kurum Profili</span>
+                <span class="material-symbols-outlined text-slate-400 text-[18px]">verified</span>
+              </header>
+
+              <div class="flex flex-col items-center text-center gap-3 my-2">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-900 to-navy text-white flex items-center justify-center shadow-md border-2 border-blue-100">
+                  <span class="material-symbols-outlined text-[36px]">local_library</span>
+                </div>
+                
+                <div class="flex flex-col gap-1">
+                  <h3 data-design-text-token="title-md" class="font-headline font-bold text-title-md text-navy tracking-tight">
+                    YUNUS EMRE MTAL
+                  </h3>
+                  <p class="font-body text-xs text-slate-500">Mesleki ve Teknik Anadolu Lisesi</p>
+                </div>
+
+                <div data-component-id="badge-active-pill" data-component-type="badge" data-component-variant="success" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 mt-1">
+                  <span class="w-2 h-2 rounded-full bg-emerald"></span>
+                  <span data-design-text-token="label-sm">Sistem Aktif</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-light-outline flex items-center justify-between text-xs font-body text-slate-600 bg-slate-50/70 p-2.5 rounded-lg border border-slate-200/70">
+              <span class="text-slate-500">Yönetici:</span>
+              <span class="font-semibold text-navy flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+                İdare Paneli
+              </span>
+            </div>
+          </article>
+
+          <!-- Center Card: "e-Okul Eklenti Kurulumu & Kullanım" guide card -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="bg-light-surface rounded-xl border border-light-outline p-6 shadow-sm flex flex-col justify-between gap-4 h-full">
+            <div>
+              <header class="flex items-center justify-between pb-3 border-b border-light-outline mb-4">
+                <span class="font-label text-label-sm text-slate-500 uppercase tracking-wider font-semibold">Rehber &amp; Dokümantasyon</span>
+                <span class="material-symbols-outlined text-teal text-[18px]">help_outline</span>
+              </header>
+
+              <h3 data-design-text-token="title-md" class="font-title text-title-md font-bold text-slate-900 mb-3">
+                e-Okul Eklenti Kurulumu &amp; Kullanım
+              </h3>
+
+              <div class="relative rounded-lg overflow-hidden border border-slate-200 bg-gradient-to-tr from-slate-900 to-navy text-white p-5 flex flex-col items-center justify-center text-center gap-2 group cursor-pointer shadow-inner">
+                <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                  <span class="material-symbols-outlined text-[24px]">play_arrow</span>
+                </div>
+                <div class="flex flex-col z-10">
+                  <span class="font-title font-semibold text-xs text-white">Video Anlatım</span>
+                  <span class="font-body text-[11px] text-blue-200">Chrome Eklentisi Senkronizasyonu (3 dk)</span>
+                </div>
+              </div>
+
+              <p data-design-text-token="body-sm" class="font-body text-body-sm text-slate-600 mt-3">
+                <strong>&#34;e-Okul Entegrasyon Eklentisi Nasıl Kullanılır?&#34;</strong> adımlarını takip ederek yoklama verilerini tek tıkla sisteme aktarabilirsiniz.
+              </p>
+            </div>
+
+            <div class="pt-2">
+              <a href="#eklenti-indir" class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-md bg-teal-50 text-teal-800 border border-teal-200 text-xs font-semibold hover:bg-teal-100 transition-state-change">
+                <span class="material-symbols-outlined text-[16px]">download</span>
+                <span>Chrome Eklentisini İndir (.crx)</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Right Card: "Sistem Duyuruları & Bilgilendirme" card with clean scrollable items -->
+          <article data-component-id="card-elevated" data-component-type="card" data-component-variant="elevated" class="bg-light-surface rounded-xl border border-light-outline p-6 shadow-sm flex flex-col justify-between gap-4 h-full">
+            <div>
+              <header class="flex items-center justify-between pb-3 border-b border-light-outline mb-4">
+                <span class="font-label text-label-sm text-slate-500 uppercase tracking-wider font-semibold">Duyurular &amp; Sistem</span>
+                <span class="material-symbols-outlined text-navy text-[18px]">campaign</span>
+              </header>
+
+              <h3 data-design-text-token="title-md" class="font-title text-title-md font-bold text-slate-900 mb-3">
+                Sistem Duyuruları &amp; Bilgilendirme
+              </h3>
+
+              <div class="flex flex-col gap-3 max-h-56 overflow-y-auto pr-1">
+                <!-- Announcement 1 -->
+                <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col gap-1.5">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-teal text-[16px]">sync_saved_locally</span>
+                    <span class="font-title text-xs font-bold text-slate-900">e-Okul Devamsızlık Entegrasyonu</span>
+                  </div>
+                  <p data-design-text-token="body-sm" class="font-body text-body-sm text-slate-600 leading-snug">
+                    Chrome eklentisi ile yoklama listesini tek tıkla çekip velilere otomatik SMS gönderebilirsiniz.
+                  </p>
+                </div>
+
+                <!-- Announcement 2 -->
+                <div class="p-3 rounded-lg bg-blue-50/60 border border-blue-200 flex flex-col gap-1.5">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-navy text-[16px]">verified_user</span>
+                    <span class="font-title text-xs font-bold text-navy">Netgsm Başlık Bilgisi</span>
+                  </div>
+                  <p data-design-text-token="body-sm" class="font-body text-body-sm text-slate-600 leading-snug">
+                    Gönderimler onaylı <strong>YEMTAL</strong> başlığı ile yapılmaktadır.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2 text-right">
+              <a href="#tum-duyurular" class="text-xs font-semibold text-navy hover:underline inline-flex items-center gap-1">
+                <span>Tüm duyuruları listele</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </a>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- NEW BOTTOM SECTION: EN ANALİZ & RAPOR MODÜLÜ (School Attendance & SMS Analytics Report) -->
+        <section class="bg-light-surface rounded-xl border border-light-outline shadow-sm p-6 flex flex-col gap-5">
+          
+          <!-- Section Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-light-outline gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center">
+                <span class="material-symbols-outlined text-[22px]">analytics</span>
+              </div>
+              <div>
+                <h2 data-design-text-token="headline-sm" class="font-headline font-bold text-headline-sm text-slate-900 flex items-center gap-2">
+                  En Analiz &amp; İletişim Performans Raporu
+                  <span class="text-xs font-semibold bg-blue-100 text-navy px-2 py-0.5 rounded border border-blue-200">Haftalık Özet</span>
+                </h2>
+                <p class="font-body text-body-sm text-slate-500">Devamsızlık eğilimleri, sınıf bazlı SMS iletim başarı oranları ve veli erişilebilirlik istatistikleri</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-500 font-body">Filtre:</span>
+              <select class="text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-300 rounded-md px-2.5 py-1.5">
+                <option>Son 7 Gün (Bu Hafta)</option>
+                <option>Son 30 Gün</option>
+                <option>Bu Dönem</option>
+              </select>
+              <button type="button" class="inline-flex items-center gap-1 text-xs font-semibold text-navy border border-light-outline px-3 py-1.5 rounded-md hover:bg-slate-50 transition-state-change">
+                <span class="material-symbols-outlined text-[16px]">file_download</span>
+                <span>PDF Rapor İndir</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 Analytics Metric Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- Metric 1: Toplam Gönderilen SMS -->
+            <div class="p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between gap-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Toplam İletilen SMS</span>
+                <span class="w-7 h-7 rounded-md bg-blue-100 text-navy flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[16px]">mark_email_read</span>
+                </span>
+              </div>
+              <div>
+                <span class="font-headline font-bold text-headline-md text-navy tabular-nums">1.428</span>
+                <div class="flex items-center gap-1.5 text-xs text-emerald-700 mt-0.5">
+                  <span class="material-symbols-outlined text-[14px]">trending_up</span>
+                  <span>Geçen haftaya göre +%12</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Metric 2: Başarılı Teslimat Oranı -->
+            <div class="p-4 rounded-lg bg-emerald-50/60 border border-emerald-200/80 flex flex-col justify-between gap-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-emerald-800 uppercase tracking-wide">Teslimat Başarısı</span>
+                <span class="w-7 h-7 rounded-md bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[16px]">verified</span>
+                </span>
+              </div>
+              <div>
+                <span class="font-headline font-bold text-headline-md text-emerald-900 tabular-nums">%99.2</span>
+                <div class="flex items-center gap-1 text-xs text-slate-600 mt-0.5">
+                  <span>Netgsm DLR raporu ile onaylı</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Metric 3: Otomasyon Devamsızlık Bildirimi -->
+            <div class="p-4 rounded-lg bg-teal-50/60 border border-teal-200/80 flex flex-col justify-between gap-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-teal-900 uppercase tracking-wide">e-Okul Bildirimi</span>
+                <span class="w-7 h-7 rounded-md bg-teal-100 text-teal-800 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[16px]">auto_mode</span>
+                </span>
+              </div>
+              <div>
+                <span class="font-headline font-bold text-headline-md text-teal-950 tabular-nums">264 Öğrenci</span>
+                <div class="flex items-center gap-1 text-xs text-teal-800 mt-0.5">
+                  <span>Haftalık tek tıkla veliye ulaşıldı</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Metric 4: İletilemeyen / Hatalı Numara -->
+            <div class="p-4 rounded-lg bg-red-50/60 border border-red-200/80 flex flex-col justify-between gap-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-red-800 uppercase tracking-wide">İletilemeyen SMS</span>
+                <span class="w-7 h-7 rounded-md bg-red-100 text-crimson flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[16px]">error</span>
+                </span>
+              </div>
+              <div>
+                <span class="font-headline font-bold text-headline-md text-crimson tabular-nums">11 Adet</span>
+                <div class="flex items-center gap-1 text-xs text-red-700 mt-0.5">
+                  <span>Hatalı veya kapalı hat</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Visual Attendance Analysis Grid (Sınıf Bazlı Devamsızlık & SMS Gönderim Dağılımı) -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+            
+            <!-- Left 2 Cols: Sınıf Bazlı Devamsızlık & Gönderim Tablosu -->
+            <div class="lg:col-span-2 border border-light-outline rounded-lg overflow-hidden flex flex-col">
+              <div class="px-4 py-3 bg-slate-50 border-b border-light-outline flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-navy text-[18px]">bar_chart</span>
+                  <span class="font-title text-title-sm text-slate-800 font-bold">Şube Bazlı Devamsızlık &amp; Bildirim İstatistiği</span>
+                </div>
+                <span class="text-[11px] font-body text-slate-500">Bugünkü Yoklama Karşılaştırması</span>
+              </div>
+
+              <!-- Table Content -->
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="border-b border-slate-200 text-xs font-semibold text-slate-500 bg-slate-50/50">
+                      <th class="py-2.5 px-4">Şube Adı</th>
+                      <th class="py-2.5 px-3">Kayıtlı Öğrenci</th>
+                      <th class="py-2.5 px-3">Bugün Devamsız</th>
+                      <th class="py-2.5 px-3">SMS Durumu</th>
+                      <th class="py-2.5 px-4 text-right">Erişim Oranı</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-xs font-body text-slate-700">
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-2.5 px-4 font-semibold text-navy flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                        9-A Bilişim Teknolojileri
+                      </td>
+                      <td class="py-2.5 px-3 tabular-nums">34</td>
+                      <td class="py-2.5 px-3 font-semibold text-amber-700 tabular-nums">3 Öğrenci</td>
+                      <td class="py-2.5 px-3">
+                        <span class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald"></span> Gönderildi
+                        </span>
+                      </td>
+                      <td class="py-2.5 px-4 text-right font-code font-bold text-slate-800 tabular-nums">%100</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-2.5 px-4 font-semibold text-navy flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                        10-B Elektrik-Elektronik
+                      </td>
+                      <td class="py-2.5 px-3 tabular-nums">32</td>
+                      <td class="py-2.5 px-3 font-semibold text-amber-700 tabular-nums">4 Öğrenci</td>
+                      <td class="py-2.5 px-3">
+                        <span class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald"></span> Gönderildi
+                        </span>
+                      </td>
+                      <td class="py-2.5 px-4 text-right font-code font-bold text-slate-800 tabular-nums">%100</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-2.5 px-4 font-semibold text-navy flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        11-A Makine Teknolojisi
+                      </td>
+                      <td class="py-2.5 px-3 tabular-nums">28</td>
+                      <td class="py-2.5 px-3 font-bold text-crimson tabular-nums">6 Öğrenci</td>
+                      <td class="py-2.5 px-3">
+                        <span class="inline-flex items-center gap-1 text-[11px] font-medium text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Bekliyor
+                        </span>
+                      </td>
+                      <td class="py-2.5 px-4 text-right font-code font-bold text-slate-800 tabular-nums">%85.7</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                      <td class="py-2.5 px-4 font-semibold text-navy flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                        12-C Motorlu Araçlar
+                      </td>
+                      <td class="py-2.5 px-3 tabular-nums">30</td>
+                      <td class="py-2.5 px-3 font-semibold text-amber-700 tabular-nums">5 Öğrenci</td>
+                      <td class="py-2.5 px-3">
+                        <span class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald"></span> Gönderildi
+                        </span>
+                      </td>
+                      <td class="py-2.5 px-4 text-right font-code font-bold text-slate-800 tabular-nums">%98.0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Right 1 Col: En Çok Devamsızlık Nedenleri & Hızlı Eylem -->
+            <div class="border border-light-outline rounded-lg p-4 bg-slate-50/50 flex flex-col justify-between gap-3">
+              <div class="flex flex-col gap-3">
+                <span class="font-title text-title-sm text-slate-900 font-bold flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-teal text-[18px]">pie_chart</span>
+                  Devamsızlık Dağılım Tipi
+                </span>
+
+                <div class="flex flex-col gap-2">
+                  <div>
+                    <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                      <span>Tam Gün Devamsız</span>
+                      <span class="font-bold text-navy">12 Öğrenci (%66)</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                      <div class="h-full bg-navy rounded-full" style="width: 66%;"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                      <span>Yarım Gün Devamsız</span>
+                      <span class="font-bold text-teal-800">4 Öğrenci (%22)</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                      <div class="h-full bg-teal rounded-full" style="width: 22%;"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                      <span>Geç Kalma (İlk Ders)</span>
+                      <span class="font-bold text-amber-700">2 Öğrenci (%12)</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                      <div class="h-full bg-amber-500 rounded-full" style="width: 12%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Insight Callout -->
+              <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs text-slate-600 flex flex-col gap-1.5">
+                <span class="font-semibold text-navy flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[15px]">tips_and_updates</span>
+                  Otomasyon İpucu:
+                </span>
+                <span>Öğleden sonra yoklaması eklenti ile saat 14:30&#39;da otomatik çekilip SMS gönderimi tetiklenecektir.</span>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Interactive Accordion Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.getElementById('accordion-toggle');
+      const menu = document.getElementById('accordion-menu');
+      const icon = document.getElementById('accordion-icon');
+
+      if (toggle && menu && icon) {
+        toggle.addEventListener('click', function () {
+          const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', !isExpanded);
+          if (isExpanded) {
+            menu.classList.add('hidden');
+            icon.style.transform = 'rotate(-90deg)';
+          } else {
+            menu.classList.remove('hidden');
+            icon.style.transform = 'rotate(0deg)';
+          }
+        });
+      }
+    });
+  </script>
+
+
+
+</body></html>
