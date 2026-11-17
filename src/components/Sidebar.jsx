@@ -5,8 +5,8 @@ export default function Sidebar({
   setCurrentTab,
   smsBalance,
   currentUser,
-  pendingAttendanceCount,
   pendingStagingCount = 0,
+  lastSyncInfo,
   isMobileOpen,
   setIsMobileOpen
 }) {
@@ -97,34 +97,14 @@ export default function Sidebar({
                 <span className="text-[10px] font-semibold bg-teal-900 text-teal-300 px-1.5 py-0.5 rounded border border-teal-700">Robotik</span>
               </div>
 
-              <button
-                type="button"
-                onClick={() => { setCurrentTab('attendance'); setIsMobileOpen(false); }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg font-title text-xs transition-all ${currentTab === 'attendance'
-                  ? 'bg-blue-950/70 text-blue-300 border-l-4 border-blue-500 font-semibold shadow-xs'
-                  : 'text-slate-300 hover:bg-slate-800/80'
-                  }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="material-symbols-outlined text-teal text-[19px]">bolt</span>
-                  <span>Devamsızlık Otomasyonu</span>
-                </div>
-                {pendingAttendanceCount > 0 && (
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-950 text-amber-300 border border-amber-800">
-                    {pendingAttendanceCount} Bekleyen
-                  </span>
-                )}
-              </button>
-
-              {/* YENİ: Otomasyon Öğrenci (e-Okul Veri İşleme) */}
+              {/* Otomasyon Öğrenci (e-Okul Devamsızlık Masası) */}
               <button
                 type="button"
                 onClick={() => { setCurrentTab('automation_students'); setIsMobileOpen(false); }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg font-title text-xs transition-all ${
-                  currentTab === 'automation_students'
-                    ? 'bg-blue-950/70 text-blue-300 border-l-4 border-blue-500 font-semibold shadow-xs'
-                    : 'text-slate-300 hover:bg-slate-800/80'
-                }`}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg font-title text-xs transition-all ${currentTab === 'automation_students'
+                  ? 'bg-blue-950/70 text-blue-300 border-l-4 border-blue-500 font-semibold shadow-xs'
+                  : 'text-slate-300 hover:bg-slate-800/80'
+                  }`}
               >
                 <div className="flex items-center gap-2.5">
                   <span className="material-symbols-outlined text-amber-400 text-[19px]">smart_toy</span>
@@ -139,7 +119,7 @@ export default function Sidebar({
                 )}
               </button>
 
-              <button 
+              <button
                 type="button"
                 onClick={() => { setCurrentTab('sync'); setIsMobileOpen(false); }}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg font-title text-xs transition-all ${currentTab === 'sync'

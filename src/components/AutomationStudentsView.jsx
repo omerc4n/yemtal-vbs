@@ -9,6 +9,7 @@ export default function AutomationStudentsView({
   smsBalance,
   autoProcessPolicy,
   onChangeAutoProcessPolicy,
+  lastSyncInfo,
   showToast
 }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -137,24 +138,43 @@ export default function AutomationStudentsView({
       </div>
 
       {/* 2. EKLENTİ ENTEGRASYONU & "VERİ ÇEKİLDİĞİNDE SİSTEME İŞLESİN Mİ?" AYAR BARI */}
-      <div className="p-4 rounded-xl bg-gradient-to-r from-[#0F172A] via-slate-900 to-[#0F172A] border border-slate-800 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 rounded-xl bg-gradient-to-r from-[#0F172A] via-slate-900 to-[#0F172A] border border-slate-800 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         
-        {/* Sol: Eklenti Durumu */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-teal-400 flex-shrink-0">
-            <span className="material-symbols-outlined text-[20px]">extension</span>
-          </div>
-          <div className="flex flex-col text-xs">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-white">e-Okul Chrome Köprüsü:</span>
-              <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald"></span> Veri Almaya Hazır
+        {/* Sol: Eklenti Durumu & Son Çekilme Detayları */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-teal-400 flex-shrink-0">
+              <span className="material-symbols-outlined text-[20px]">extension</span>
+            </div>
+            <div className="flex flex-col text-xs">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-white">e-Okul Chrome Köprüsü:</span>
+                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald"></span> Veri Almaya Hazır
+                </span>
+              </div>
+              <span className="text-slate-400 text-[11px]">
+                Eklentiden devamsızlık çekildiğinde otomatik bu listeye işlenir.
               </span>
             </div>
-            <span className="text-slate-400 text-[11px]">
-              Eklentiden devamsızlık çekildiğinde otomatik bu listeye işlenir.
-            </span>
           </div>
+
+          {/* YENİ: En Son Ne Zaman Veri Çekildi & Hangi Kullanıcıdan Geldiği */}
+          {lastSyncInfo && (
+            <div className="flex flex-wrap items-center gap-2 pt-2 sm:pt-0 sm:pl-3 sm:border-l sm:border-slate-800 text-xs">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-950 border border-slate-800">
+                <span className="material-symbols-outlined text-[15px] text-teal">update</span>
+                <span className="text-slate-400 text-[11px]">Son Çekilme:</span>
+                <span className="font-mono text-emerald-400 font-bold text-[11px]">{lastSyncInfo.time}</span>
+              </div>
+
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-950 border border-slate-800">
+                <span className="material-symbols-outlined text-[15px] text-amber-400">person</span>
+                <span className="text-slate-400 text-[11px]">Çeken Kullanıcı:</span>
+                <span className="text-amber-300 font-bold text-[11px]">{lastSyncInfo.user}</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Sağ: "Veri Çekildiğinde Sisteme İşlesin mi?" Seçimi */}

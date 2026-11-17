@@ -2,9 +2,10 @@ import React from 'react';
 
 export default function DashboardView({ 
   setCurrentTab, 
-  pendingAttendanceCount, 
+  pendingStagingCount, 
   smsBalance,
   currentUser,
+  lastSyncInfo,
   showToast 
 }) {
   return (
@@ -24,11 +25,11 @@ export default function DashboardView({
         <div className="flex items-center gap-2">
           <button 
             type="button" 
-            onClick={() => setCurrentTab('attendance')}
+            onClick={() => setCurrentTab('automation_students')}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald text-white rounded-lg text-xs font-bold hover:bg-emerald-600 transition-all shadow-xs"
           >
-            <span className="material-symbols-outlined text-[17px]">send</span>
-            <span>Devamsızlık SMS Ekranı</span>
+            <span className="material-symbols-outlined text-[17px]">smart_toy</span>
+            <span>Otomasyon Öğrenci (SMS)</span>
           </button>
 
           <button 
@@ -83,10 +84,10 @@ export default function DashboardView({
           </div>
           <div>
             <div className="font-headline font-bold text-3xl text-amber-400 tracking-tight">
-              {pendingAttendanceCount}
+              {pendingStagingCount}
             </div>
             <span className="text-[11px] text-amber-300 font-medium mt-1 block">
-              {pendingAttendanceCount > 0 ? 'SMS gönderimi bekliyor' : 'Tüm velilere iletildi'}
+              {pendingStagingCount > 0 ? 'SMS gönderimi bekliyor' : 'Tüm velilere iletildi'}
             </span>
           </div>
         </div>
@@ -134,11 +135,11 @@ export default function DashboardView({
         <div className="flex-shrink-0">
           <button 
             type="button"
-            onClick={() => setCurrentTab('attendance')}
+            onClick={() => setCurrentTab('automation_students')}
             className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-emerald text-white rounded-lg text-xs font-bold shadow-xs hover:bg-emerald-600 active:scale-[0.98] transition-all"
           >
-            <span className="material-symbols-outlined text-[20px]">send</span>
-            <span>Devamsızlık Listesine Git</span>
+            <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+            <span>Otomasyon Öğrenci Masasına Git</span>
           </button>
         </div>
       </section>
@@ -221,6 +222,14 @@ export default function DashboardView({
               <div className="flex justify-between py-1.5 border-b border-slate-800/80">
                 <span className="text-slate-400">SMS Gönderici Başlığı:</span>
                 <span className="font-bold text-teal">YEMTAL (Onaylı)</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-slate-800/80">
+                <span className="text-slate-400">Son e-Okul Çekimi:</span>
+                <span className="font-mono text-emerald-400 font-semibold">{lastSyncInfo?.time || '16.11.2026 21:30'}</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-slate-800/80">
+                <span className="text-slate-400">Veriyi Çeken Yetkili:</span>
+                <span className="font-bold text-amber-300">{lastSyncInfo?.user || 'Admin (Admin)'}</span>
               </div>
               <div className="flex justify-between py-1.5">
                 <span className="text-slate-400">Kullanıcı Rolünüz:</span>

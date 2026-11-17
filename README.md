@@ -46,18 +46,21 @@ Yunus Emre Mesleki ve Teknik Anadolu Lisesi için geliştirilmiş modern, kurums
 
 ---
 
-### 5. 🤖 Otomasyon Öğrenci & e-Okul Veri İşleme Havuzu (YENİ!)
-- **"e-Okul'dan Veri Çekildiği Zaman Oraya İşlesin mi?" Kuralı:**
-  - **Manuel Onay (Havuzda Beklet - Tavsiye Edilen):** e-Okul botu yoklama defterini veya öğrenci listesini taradığında veriler önce bu onay havuzuna düşer. İdareci inceleyip "Sisteme İşle" butonuna basmadan velilere kesinlikle SMS gitmez ve ana listeye yazılmaz.
-  - **Otomatik İşleme (Doğrudan Yaz):** e-Okul botu veriyi aldığı anda onay beklemeden doğrudan devamsızlık listesine işler ve SMS gönderim kuyruğuna aktarır.
-- **Canlı e-Okul Veri Çekme:** *"e-Okul'dan Veri Çek"* butonu ile anlık bot simülasyonu çalıştırılır ve havuza yeni yoklama/öğrenci kayıtları çekilir.
-- **Onay & Reddetme:**
-  - Tek tek öğrencilerin devamsızlık türü, veli telefonu ve e-okul kaynağı incelenerek **"Sisteme İşle"** veya **"Atla / Reddet"** yapılabilir.
-  - Toplu seçim kutularıyla (Checkbox) birden fazla öğrenci tek tıkla onaylanıp sisteme aktarılabilir.
-- **Sisteme İşlendiğinde:**
-  - Devamsızlık Otomasyonu ekranına anında eklenir (SMS gönderilmeye hazır hale gelir).
-  - Veli iletişim rehberinde telefon bilgisi güncellenir.
-  - Denetim raporlarına kimin neyi onayladığı saniyesiyle kaydedilir.
+### 5. 🤖 Otomasyon Öğrenci (e-Okul Devamsızlık Masası) (YENİ!)
+- **Chrome Eklentisi Entegrasyonu:**
+  - Chrome eklentisinden *"e-Okul'dan Okula Devamsızlık Verisi Çek"* dendiğinde çekilen kayıtlar anında bu sekmeye listelenir.
+  - Sayfada sağ üstte **"e-Okul Veri Yenile"** butonu bulunur; basıldığında eklentiden veya e-Okul sisteminden veriler anında tazelenir ve havuza yeni yoklamalar düşer.
+- **e-Okul Devamsızlık Türleri:**
+  - 🔴 **Tam Gün Yok:** Tüm gün okula gelmeyen öğrenciler.
+  - 🟠 **Öğleden Önce Yok:** Sabah ilk 4 derste sınıfta bulunmayan öğrenciler.
+  - 🔵 **Öğleden Sonra Yok:** Öğle arasından sonraki derslerde bulunmayan öğrenciler.
+- **Mesaj Gönderim Operasyonu (Tekli & Toplu):**
+  - **Tekli Mesaj Gönder:** Her öğrencinin satırındaki yeşil *"Mesaj Gönder"* butonu ile veli iletişim numarasına ve devamsızlık türüne uygun otomatik şablon mesajı önizlenip tek tıkla gönderilir.
+  - **Toplu Mesaj Gönder:** Checkbox seçimleriyle veya sağ üstteki *"Tümüne / Seçilenlere Mesaj Gönder"* butonuyla bekleyen tüm velilere tek seferde SMS gönderilir.
+  - Her gönderimde Netgsm kredisi otomatik düşülür ve Denetim Raporlarına saniyesiyle kimin SMS attığı işlenir.
+- **"e-Okul'dan Veri Çekildiği Zaman Oraya İşlesin mi?" Ayarı:**
+  - **Onaylı (Manuel İnceleme):** Veriler havuza gelir; yetkili inceleyip mesaj gönder butonuna basınca işlem yapılır.
+  - **Otomatik:** Veri çekildiği an sisteme işlenir ve SMS gönderilmeye hazır hale gelir.
 
 ---
 

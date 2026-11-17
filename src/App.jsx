@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  INITIAL_USERS, 
-  INITIAL_LOGS, 
-  INITIAL_NETGSM_SETTINGS, 
-  INITIAL_SCHOOL_SETTINGS, 
-  INITIAL_ATTENDANCE, 
+import {
+  INITIAL_USERS,
+  INITIAL_LOGS,
+  INITIAL_NETGSM_SETTINGS,
+  INITIAL_SCHOOL_SETTINGS,
   INITIAL_DIRECTORY,
   INITIAL_EOKUL_STAGING
 } from './data/mockData';
@@ -12,7 +11,6 @@ import {
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import DashboardView from './components/DashboardView';
-import AttendanceView from './components/AttendanceView';
 import AutomationStudentsView from './components/AutomationStudentsView';
 import MessageSenderView from './components/MessageSenderView';
 import DirectoryView from './components/DirectoryView';
@@ -24,25 +22,32 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState('dashboard');
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // App Core State
+  // Kullanıcı & Oturum State
   const [users, setUsers] = useState(INITIAL_USERS);
-  const [currentUser, setCurrentUser] = useState(INITIAL_USERS[0]); // Varsayılan: Admin (Yönetici)
+  const [currentUser, setCurrentUser] = useState(INITIAL_USERS[0]); // Varsayılan: Admin
+
+  // Denetim Günlüğü State
   const [logs, setLogs] = useState(INITIAL_LOGS);
-  const [attendanceList, setAttendanceList] = useState(INITIAL_ATTENDANCE);
+
+  // Rehber State
   const [directoryList, setDirectoryList] = useState(INITIAL_DIRECTORY);
+
+  // Sistem Ayarları State
   const [netgsmSettings, setNetgsmSettings] = useState(INITIAL_NETGSM_SETTINGS);
   const [schoolSettings, setSchoolSettings] = useState(INITIAL_SCHOOL_SETTINGS);
 
-  // Otomasyon Öğrenci / e-Okul Staging State
+  // Otomasyon Öğrenci / e-Okul State
   const [eOkulStagingList, setEOkulStagingList] = useState(INITIAL_EOKUL_STAGING);
   const [autoProcessPolicy, setAutoProcessPolicy] = useState('manual'); // 'manual' | 'auto'
   const [isFetchingEOkul, setIsFetchingEOkul] = useState(false);
 
-  // Sync Progress State
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [syncProgress, setSyncProgress] = useState(0);
+  // Son e-Okul Veri Çekilme Bilgisi
+  const [lastSyncInfo, setLastSyncInfo] = useState({
+    time: "16 Kasım 2026 • 21:15",
+    user: "Admin (Admin)"
+  });
 
-  // Toast Notifications State
+  // Toast Bildirim State
   const [toasts, setToasts] = useState([]);
 
   // Site HER ZAMAN karanlık temada
@@ -80,41 +85,6 @@ export default function App() {
     };
 
     setLogs(prev => [newLog, ...prev]);
-  };
-
-  // EYLEM: Toplu Devamsızlık SMS Gönderme
-  const handleSendBulkSms = () => {
-    const pending = attendanceList.filter(i => i.smsStatus !== 'sent');
-    const count = pending.length;
-    if (count === 0) return;
-
-    setAttendanceList(prev => prev.map(i => ({ ...i, smsStatus: 'sent' })));
-    setNetgsmSettings(prev => ({ ...prev, balance: prev.balance - count }));
-
-    addLog(
-      'Toplu Devamsızlık SMS Gönderimi',
-      'sms',
-      `${count} adet devamsız öğrenci velisine e-Okul yoklama SMS'i Netgsm onaylı '${netgsmSettings.header}' başlığı ile iletildi.`
-    );
-
-    showToast(`${count} adet devamsızlık SMS bildirimi başarıyla velilere iletildi!`, 'success');
-  };
-
-  // EYLEM: Tekil Devamsızlık SMS Gönderme
-  const handleSendSingleSms = (id) => {
-    const student = attendanceList.find(i => i.id === id);
-    if (!student) return;
-
-    setAttendanceList(prev => prev.map(i => i.id === id ? { ...i, smsStatus: 'sent' } : i));
-    setNetgsmSettings(prev => ({ ...prev, balance: prev.balance - 1 }));
-
-    addLog(
-      'Tekil Devamsızlık SMS Gönderimi',
-      'sms',
-      `${student.name} (${student.class}) velisine (${student.parentPhone}) devamsızlık bildirimi iletildi.`
-    );
-
-    showToast(`${student.name} velisine SMS iletildi.`, 'success');
   };
 
   // EYLEM: Manuel SMS Gönderme
@@ -220,26 +190,6 @@ export default function App() {
     }
   };
 
-  // EYLEM: e-Okul Senkronizasyonu
-  const handleTriggerSync = () => {
-    if (isSyncing) return;
-    setIsSyncing(true);
-    setSyncProgress(25);
-
-    setTimeout(() => setSyncProgress(65), 400);
-    setTimeout(() => setSyncProgress(100), 800);
-    setTimeout(() => {
-      setIsSyncing(false);
-      setSyncProgress(0);
-      addLog(
-        'e-Okul Veri Senkronizasyonu',
-        'sync',
-        'e-Okul yoklama defteri taranarak 18 devamsız öğrenci listesi çekildi.'
-      );
-      showToast('e-Okul verileri başarıyla senkronize edildi!', 'success');
-    }, 1100);
-  };
-
   // EYLEM: Otomasyon Öğrenci - Tekil Devamsızlık Mesajı Gönderme
   const handleSendSingleAutomationSms = (item) => {
     setEOkulStagingList(prev => prev.map(i => i.id === item.id ? { ...i, smsStatus: 'sent', sentAt: 'Az önce' } : i));
@@ -324,13 +274,25 @@ export default function App() {
 
       setEOkulStagingList(prev => [...newItems, ...prev]);
 
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const formattedDate = `${pad(now.getDate())}.${pad(now.getMonth() + 1)}.${now.getFullYear()}`;
+      const formattedTime = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      const syncTimeStr = `${formattedDate} • ${formattedTime}`;
+      const syncUserStr = `${currentUser.name} (${currentUser.roleLabel})`;
+      
+      setLastSyncInfo({
+        time: syncTimeStr,
+        user: syncUserStr
+      });
+
       addLog(
         'e-Okul Verileri Yenilendi',
         'automation',
-        `Chrome eklentisi köprüsünden 3 yeni devamsızlık kaydı çekildi ve listeye eklendi.`
+        `Chrome eklentisi köprüsünden 3 yeni devamsızlık kaydı çekildi ve listeye eklendi. (İşlem Yapan: ${syncUserStr})`
       );
 
-      showToast('e-Okul verileri yenilendi! 3 yeni devamsızlık kaydı çekildi.', 'info');
+      showToast(`e-Okul verileri yenilendi! (${syncUserStr})`, 'info');
     }, 1100);
   };
 
@@ -348,8 +310,7 @@ export default function App() {
     );
   };
 
-  const pendingAttendanceCount = attendanceList.filter(i => i.smsStatus !== 'sent').length;
-  const pendingStagingCount = eOkulStagingList.filter(i => i.status === 'pending').length;
+  const pendingStagingCount = eOkulStagingList.filter(i => i.smsStatus === 'pending').length;
   const isImpersonating = currentUser.role !== 'admin';
 
   return (
@@ -363,8 +324,8 @@ export default function App() {
         setCurrentTab={setCurrentTab}
         smsBalance={netgsmSettings.balance}
         currentUser={currentUser}
-        pendingAttendanceCount={pendingAttendanceCount}
         pendingStagingCount={pendingStagingCount}
+        lastSyncInfo={lastSyncInfo}
         isMobileOpen={isMobileOpen}
         setIsMobileOpen={setIsMobileOpen}
       />
@@ -378,45 +339,37 @@ export default function App() {
           setIsMobileOpen={setIsMobileOpen}
         />
 
-        {/* Canlı e-Okul Senkronizasyon İlerleme Çubuğu */}
-        {isSyncing && (
+        {/* isFetchingEOkul: "e-Okul Veri Yenile" butonu tıklandığında üstte yükleme çubuğu gösterir */}
+        {isFetchingEOkul && (
           <div className="bg-teal-950 text-teal-200 px-6 py-2.5 border-b border-teal-800">
             <div className="max-w-7xl mx-auto flex flex-col gap-1.5">
               <div className="flex items-center justify-between text-xs font-semibold">
                 <span className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-[18px] animate-spin">sync</span>
-                  <span>e-Okul ile veri senkronizasyonu yapılıyor...</span>
+                  <span>e-Okul'dan veriler çekiliyor...</span>
                 </span>
                 <span className="font-code text-teal-400">Otomasyon Botu</span>
               </div>
               <div className="w-full h-1.5 bg-teal-900 rounded-full overflow-hidden">
-                <div className="h-full bg-teal-400 transition-all duration-300" style={{ width: `${syncProgress}%` }}></div>
+                <div className="h-full bg-teal-400 animate-pulse" style={{ width: '60%' }}></div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Sekmelere Göre Görünümler */}
+        {/* Genel Bakış */}
         {currentTab === 'dashboard' && (
           <DashboardView 
             setCurrentTab={setCurrentTab}
-            pendingAttendanceCount={pendingAttendanceCount}
+            pendingStagingCount={pendingStagingCount}
             smsBalance={netgsmSettings.balance}
             currentUser={currentUser}
+            lastSyncInfo={lastSyncInfo}
             showToast={showToast}
           />
         )}
 
-        {currentTab === 'attendance' && (
-          <AttendanceView 
-            attendanceList={attendanceList}
-            onSendBulkSms={handleSendBulkSms}
-            onSendSingleSms={handleSendSingleSms}
-            smsBalance={netgsmSettings.balance}
-          />
-        )}
-
-        {/* YENİ: Otomasyon Öğrenci (e-Okul Devamsızlık Masası) */}
+        {/* Otomasyon Öğrenci — e-Okul Devamsızlık Masası */}
         {currentTab === 'automation_students' && (
           <AutomationStudentsView 
             stagingList={eOkulStagingList}
@@ -427,84 +380,9 @@ export default function App() {
             smsBalance={netgsmSettings.balance}
             autoProcessPolicy={autoProcessPolicy}
             onChangeAutoProcessPolicy={handleChangeAutoProcessPolicy}
+            lastSyncInfo={lastSyncInfo}
             showToast={showToast}
           />
-        )}
-
-        {currentTab === 'sync' && (
-          <div className="p-4 md:p-8 max-w-7xl w-full mx-auto flex flex-col gap-6 animate-fadeIn">
-            <div className="flex items-center gap-3 pb-4 border-b border-slate-800">
-              <div className="w-10 h-10 rounded-lg bg-blue-950/60 border border-blue-900 text-blue-400 flex items-center justify-center">
-                <span className="material-symbols-outlined text-[24px]">cloud_download</span>
-              </div>
-              <div>
-                <h2 className="font-headline font-bold text-lg text-white">
-                  e-Okul Entegrasyonu &amp; Veri Aktarımı
-                </h2>
-                <p className="text-xs text-slate-400">Resmi e-Okul Yönetim Bilgi Sistemi üzerinden öğrenci ve yoklama aktarımı</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 bg-[#0F172A] rounded-xl border border-slate-800 p-6 flex flex-col gap-5 shadow-xs">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <span className="material-symbols-outlined text-blue-400 text-[18px]">sync</span>
-                  Canlı Senkronizasyon Konsolu
-                </h3>
-
-                <div className="p-4 rounded-lg bg-slate-900 border border-slate-800 flex flex-col gap-3 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-slate-300">Chrome Eklentisi Köprüsü:</span>
-                    <span className="text-emerald-400 font-bold flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-emerald"></span> Bağlantı Kuruldu
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-slate-300">e-Okul Oturum Durumu:</span>
-                    <span className="text-slate-300">Giriş Yapıldı (MEBBİS Yetkilendirmesi)</span>
-                  </div>
-                </div>
-
-                <div className="pt-2 flex flex-col sm:flex-row gap-3">
-                  <button 
-                    type="button"
-                    onClick={handleTriggerSync}
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-navy text-white rounded-lg text-xs font-bold hover:bg-blue-900 shadow-xs transition-all"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">autorenew</span>
-                    <span>e-Okul'dan Verileri Şimdi Çek</span>
-                  </button>
-                  
-                  <button 
-                    type="button" 
-                    onClick={() => showToast('Öğrenci listesi şablonu Excel olarak indirildi', 'info')}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-slate-800 border border-slate-700 text-slate-200 rounded-lg text-xs font-semibold hover:bg-slate-700 transition-all"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">download</span>
-                    <span>Öğrenci Listesi Excel İndir</span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="bg-[#0F172A] rounded-xl border border-slate-800 p-6 flex flex-col justify-between gap-4 shadow-xs">
-                <div className="flex flex-col gap-3">
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    <span className="material-symbols-outlined text-teal text-[18px]">info</span>
-                    Nasıl Çalışır?
-                  </h3>
-                  <ol className="text-xs text-slate-400 space-y-2 list-decimal list-inside">
-                    <li>Google Chrome tarayıcınızda resmi e-Okul sayfasına MEBBİS şifrenizle giriş yapın.</li>
-                    <li>Günlük yoklama defteri veya öğrenci listesi ekranını açın.</li>
-                    <li>YEMTAL-VBS Chrome eklentisi verileri otomatik okur ve tek tıkla bu panele aktarır.</li>
-                  </ol>
-                </div>
-
-                <div className="p-3 bg-amber-950/40 border border-amber-800 rounded-lg text-xs text-amber-300">
-                  <strong>Güvenlik Notu:</strong> Eklenti yalnızca yerel olarak çalışır, MEBBİS veya e-Okul şifrenizi asla sunuculara göndermez.
-                </div>
-              </div>
-            </div>
-          </div>
         )}
 
         {currentTab === 'send_sms' && (
