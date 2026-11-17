@@ -54,13 +54,14 @@ Yunus Emre Mesleki ve Teknik Anadolu Lisesi için geliştirilmiş modern, kurums
   - 🔴 **Tam Gün Yok:** Tüm gün okula gelmeyen öğrenciler.
   - 🟠 **Öğleden Önce Yok:** Sabah ilk 4 derste sınıfta bulunmayan öğrenciler.
   - 🔵 **Öğleden Sonra Yok:** Öğle arasından sonraki derslerde bulunmayan öğrenciler.
+- **Dinamik SMS Şablonu Ayarlama (YENİ!):**
+  - Velilere gönderilecek genel SMS metni sayfa üzerinden özelleştirilebilir.
+  - `[Öğrenci Adı]`, `[Okul No]`, `[Sınıf]`, `[Devamsızlık Türü]`, `[Tarih]`, `[Veli Adı]` etiketleri tek tıkla şablona eklenir.
+  - Düzenlenen şablon için anlık karakter/SMS kredi sayacı ve örnek öğrenci üzerinde canlı önizleme sunulur.
 - **Mesaj Gönderim Operasyonu (Tekli & Toplu):**
-  - **Tekli Mesaj Gönder:** Her öğrencinin satırındaki yeşil *"Mesaj Gönder"* butonu ile veli iletişim numarasına ve devamsızlık türüne uygun otomatik şablon mesajı önizlenip tek tıkla gönderilir.
-  - **Toplu Mesaj Gönder:** Checkbox seçimleriyle veya sağ üstteki *"Tümüne / Seçilenlere Mesaj Gönder"* butonuyla bekleyen tüm velilere tek seferde SMS gönderilir.
+  - **Tekli Mesaj Gönder:** Satırdaki yeşil *"Mesaj Gönder"* butonu ile belirlenen şablona uygun önizleme açılır ve tek tıkla gönderilir.
+  - **Toplu Mesaj Gönder:** Bekleyen tüm velilere veya seçilenlere belirlenen şablona göre tek seferde SMS gönderilir.
   - Her gönderimde Netgsm kredisi otomatik düşülür ve Denetim Raporlarına saniyesiyle kimin SMS attığı işlenir.
-- **"e-Okul'dan Veri Çekildiği Zaman Oraya İşlesin mi?" Ayarı:**
-  - **Onaylı (Manuel İnceleme):** Veriler havuza gelir; yetkili inceleyip mesaj gönder butonuna basınca işlem yapılır.
-  - **Otomatik:** Veri çekildiği an sisteme işlenir ve SMS gönderilmeye hazır hale gelir.
 
 ---
 
@@ -75,28 +76,28 @@ Yunus Emre Mesleki ve Teknik Anadolu Lisesi için geliştirilmiş modern, kurums
 ```
 E-YEMTAL/
 │
-├── index.html                     # Doğrudan tarayıcıda çalışan React 18 SPA (Karanlık Tema)
-├── package.json                   # Vite & React proje konfigürasyonu
-├── vite.config.js                 # Vite yapılandırma dosyası
-├── yemtal_vbs_design_system.md    # Kurumsal tasarım sistemi rehberi
+├── index.html                     # Temiz, modern Vite React HTML giriş noktası
+├── package.json                   # Vite & React proje bağımlılıkları
+├── vite.config.js                 # Vite React yapılandırma dosyası
+├── tailwind.config.js             # Tailwind CSS tema ve renk ayarları
+├── postcss.config.js              # PostCSS yapılandırması
 │
 ├── assets/
-│   └── css/style.css              # Telefon mockup, scrollbar ve animasyon stilleri
+│   └── css/style.css              # Fontlar, scrollbar, animasyonlar ve Tailwind direktifleri
 │
 └── src/
-    ├── main.jsx                   # Vite giriş noktası
-    ├── App.jsx                    # Ana React bileşeni & State yöneticisi
+    ├── main.jsx                   # React 18 createRoot giriş noktası
+    ├── App.jsx                    # Ana State ve Sekme yöneticisi
     ├── data/
-    │   └── mockData.js            # Kullanıcılar, staging havuzu, loglar, şablonlar
+    │   └── mockData.js            # Kullanıcılar, staging havuzu, loglar, rehber verisi
     └── components/
-        ├── Sidebar.jsx            # Sol menü ve bildirim sayaçları
-        ├── Header.jsx             # Canlı saat/tarih ve yetkili rozeti
+        ├── Sidebar.jsx            # Sol navigasyon menüsü
+        ├── Header.jsx             # Canlı saat/tarih ve aktif oturum rozeti
         ├── DashboardView.jsx      # 4 KPI kartlı Genel Bakış
-        ├── AttendanceView.jsx     # Devamsız öğrenci ve SMS onay ekranı
-        ├── AutomationStudentsView.jsx # e-Okul veri işleme ve onay havuzu (YENİ!)
+        ├── AutomationStudentsView.jsx # e-Okul devamsızlık masası & SMS Şablon Editörü
         ├── MessageSenderView.jsx  # Manuel SMS ve canlı akıllı telefon önizlemesi
         ├── DirectoryView.jsx      # 840 öğrenci/veli rehberi ve düzenleme
-        ├── ReportsAuditView.jsx   # Kimin ne yaptığı canlı denetim günlüğü
+        ├── ReportsAuditView.jsx   # Canlı denetim günlüğü (Kimin ne yaptığı)
         └── SettingsView.jsx       # Netgsm API & Admin Kullanıcı Yönetimi
 ```
 

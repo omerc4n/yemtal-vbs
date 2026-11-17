@@ -38,7 +38,6 @@ export default function App() {
 
   // Otomasyon Öğrenci / e-Okul State
   const [eOkulStagingList, setEOkulStagingList] = useState(INITIAL_EOKUL_STAGING);
-  const [autoProcessPolicy, setAutoProcessPolicy] = useState('manual'); // 'manual' | 'auto'
   const [isFetchingEOkul, setIsFetchingEOkul] = useState(false);
 
   // Son e-Okul Veri Çekilme Bilgisi
@@ -296,20 +295,6 @@ export default function App() {
     }, 1100);
   };
 
-  // EYLEM: Otomasyon Öğrenci - e-Okul Veri İşleme Kuralı Değiştir
-  const handleChangeAutoProcessPolicy = (newPolicy) => {
-    setAutoProcessPolicy(newPolicy);
-    addLog(
-      'e-Okul İşleme Kuralı Güncellendi',
-      'settings',
-      `e-Okul veri işleme politikası '${newPolicy === 'auto' ? 'Doğrudan Sisteme Otomatik İşle' : 'Manuel Onay Beklet'}' olarak belirlendi.`
-    );
-    showToast(
-      newPolicy === 'auto' ? 'Kural: e-Okul verileri doğrudan sisteme işlenecek!' : 'Kural: e-Okul verileri onayınız için havuzda bekletilecek.',
-      'info'
-    );
-  };
-
   const pendingStagingCount = eOkulStagingList.filter(i => i.smsStatus === 'pending').length;
   const isImpersonating = currentUser.role !== 'admin';
 
@@ -378,8 +363,6 @@ export default function App() {
             onRefreshEOkulData={handleRefreshEOkulData}
             isRefreshing={isFetchingEOkul}
             smsBalance={netgsmSettings.balance}
-            autoProcessPolicy={autoProcessPolicy}
-            onChangeAutoProcessPolicy={handleChangeAutoProcessPolicy}
             lastSyncInfo={lastSyncInfo}
             showToast={showToast}
           />

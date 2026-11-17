@@ -7,8 +7,6 @@ export default function AutomationStudentsView({
   onRefreshEOkulData,
   isRefreshing,
   smsBalance,
-  autoProcessPolicy,
-  onChangeAutoProcessPolicy,
   lastSyncInfo,
   showToast
 }) {
@@ -17,13 +15,45 @@ export default function AutomationStudentsView({
   const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'pending', 'sent'
   const [selectedIds, setSelectedIds] = useState([]);
 
+  // Şablon Mesaj State'leri
+  const DEFAULT_TEMPLATE = "Sayın Velimiz, [Sinif] sınıfı [Okul_No] numaralı öğrencimiz [Ogrenci_Adi], [Tarih] tarihinde '[Devamsizlik_Turu]' olarak e-Okul sistemine kaydedilmiştir. Bilgilerinize rica ederiz. YEMTAL İdaresi";
+  const [messageTemplate, setMessageTemplate] = useState(DEFAULT_TEMPLATE);
+  const [isTemplateEditorOpen, setIsTemplateEditorOpen] = useState(true);
+
   // Modallar
   const [previewItem, setPreviewItem] = useState(null);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
-  // Şablon Mesaj Üretici
+  // Şablon Mesaj Üretici (Dinamik Değişkenleri Çözer)
   const generateMessageText = (item) => {
-    return `Sayın Velimiz, ${item.class} sınıfı ${item.schoolNo} numaralı öğrencimiz ${item.name}, bugün '${item.attendanceType}' olarak e-Okul sistemine kaydedilmiştir. Bilgilerinize rica ederiz. YEMTAL İdaresi`;
+    if (!item) return '';
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const dateStr = `${pad(now.getDate())}.${pad(now.getMonth() + 1)}.${now.getFullYear()}`;
+    
+    let text = messageTemplate;
+    text = text.replace(/\[ogrenci_adi\]|\{ogrenci_adi\}|\[öğrenci adı\]|\[ogrenci adı\]|\[öğrenci_adı\]/gi, item.name || '');
+    text = text.replace(/\[okul_no\]|\{okul_no\}|\[okul no\]|\[okulno\]/gi, item.schoolNo || '');
+    text = text.replace(/\[sinif\]|\{sinif\}|\[sınıf\]/gi, item.class || '');
+    text = text.replace(/\[devamsizlik_turu\]|\{devamsizlik_turu\}|\[devamsızlık türü\]|\[devamsizlik türü\]/gi, item.attendanceType || '');
+    text = text.replace(/\[tarih\]|\{tarih\}/gi, dateStr);
+    text = text.replace(/\[veli_adi\]|\{veli_adi\}|\[veli adı\]/gi, item.parentName ? item.parentName.split('(')[0].trim() : 'Velimiz');
+    text = text.replace(/\[kurum_adi\]|\{kurum_adi\}|\[kurum adı\]/gi, 'YEMTAL İdaresi');
+    return text;
+  };
+
+  const handleInsertTag = (tag) => {
+    setMessageTemplate(prev => prev + (prev.endsWith(' ') ? '' : ' ') + tag);
+    if (showToast) showToast(`${tag} etiketi şablona eklendi.`, 'info');
+  };
+
+  const sampleStudent = stagingList[0] || {
+    name: 'Deniz Sarp Karaca',
+    schoolNo: '1055',
+    class: '10-A',
+    attendanceType: 'Öğleden Önce Yok',
+    parentName: 'Metin Karaca (Baba)',
+    parentPhone: '0533 111 22 44'
   };
 
   // Filtreleme
@@ -104,8 +134,22 @@ export default function AutomationStudentsView({
           </div>
         </div>
 
-        {/* Eylem Butonları: e-Okul Veri Yenile & Toplu Mesaj Gönder */}
-        <div className="flex items-center gap-2.5">
+        {/* Eylem Butonları: Şablon Düzenle, e-Okul Veri Yenile & Toplu Mesaj Gönder */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* SMS ŞABLON DÜZENLEME BUTONU */}
+          <button 
+            type="button"
+            onClick={() => setIsTemplateEditorOpen(prev => !prev)}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-xs font-bold border shadow-xs transition-all active:scale-95 ${
+              isTemplateEditorOpen 
+                ? 'bg-teal-950 text-teal-300 border-teal-700' 
+                : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[18px] text-teal">edit_note</span>
+            <span>{isTemplateEditorOpen ? 'Şablonu Gizle' : 'SMS Şablonu Ayarla'}</span>
+          </button>
+
           {/* e-OKUL VERİ YENİLE BUTONU */}
           <button 
             type="button"
@@ -137,7 +181,7 @@ export default function AutomationStudentsView({
         </div>
       </div>
 
-      {/* 2. EKLENTİ ENTEGRASYONU & "VERİ ÇEKİLDİĞİNDE SİSTEME İŞLESİN Mİ?" AYAR BARI */}
+      {/* 2. EKLENTİ ENTEGRASYON BARI (VERİLER OTOMATİK DÜŞER) */}
       <div className="p-4 rounded-xl bg-gradient-to-r from-[#0F172A] via-slate-900 to-[#0F172A] border border-slate-800 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         
         {/* Sol: Eklenti Durumu & Son Çekilme Detayları */}
@@ -159,7 +203,7 @@ export default function AutomationStudentsView({
             </div>
           </div>
 
-          {/* YENİ: En Son Ne Zaman Veri Çekildi & Hangi Kullanıcıdan Geldiği */}
+          {/* En Son Ne Zaman Veri Çekildi & Hangi Kullanıcıdan Geldiği */}
           {lastSyncInfo && (
             <div className="flex flex-wrap items-center gap-2 pt-2 sm:pt-0 sm:pl-3 sm:border-l sm:border-slate-800 text-xs">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-950 border border-slate-800">
@@ -177,42 +221,117 @@ export default function AutomationStudentsView({
           )}
         </div>
 
-        {/* Sağ: "Veri Çekildiğinde Sisteme İşlesin mi?" Seçimi */}
-        <div className="flex items-center gap-3 bg-slate-950/80 px-3.5 py-2 rounded-lg border border-slate-800">
-          <div className="flex flex-col text-right">
-            <span className="text-xs font-bold text-white">Veri Çekildiğinde İşleme Kuralı:</span>
-            <span className="text-[11px] text-slate-400">
-              {autoProcessPolicy === 'auto' ? 'Doğrudan listeye al & hazırla' : 'Önce incele & onay ile gönder'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-md border border-slate-700">
-            <button
-              type="button"
-              onClick={() => onChangeAutoProcessPolicy('manual')}
-              className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all ${
-                autoProcessPolicy === 'manual'
-                  ? 'bg-amber-500 text-slate-950 shadow-xs'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Onaylı
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onChangeAutoProcessPolicy('auto')}
-              className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all ${
-                autoProcessPolicy === 'auto'
-                  ? 'bg-emerald-500 text-slate-950 shadow-xs'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Otomatik
-            </button>
+        {/* Sağ: Otomatik Düşme Bilgisi */}
+        <div className="flex items-center gap-2.5 bg-slate-950/80 px-3.5 py-2 rounded-lg border border-slate-800 text-xs">
+          <span className="w-2 h-2 rounded-full bg-emerald animate-pulse"></span>
+          <div className="flex flex-col">
+            <span className="font-semibold text-white">Otomatik Aktarım Devrede</span>
+            <span className="text-[11px] text-slate-400">Eklenti verisi doğrudan bu masaya kaydedilir</span>
           </div>
         </div>
       </div>
+
+      {/* 2.5 ŞABLON MESAJ AYARLAMA PANELİ (HERKESE GİDECEK MESAJ ŞABLONU) */}
+      {isTemplateEditorOpen && (
+        <div className="p-4 md:p-5 rounded-xl bg-[#0F172A] border border-teal-800/60 shadow-lg flex flex-col gap-4 animate-fadeIn">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-teal-950 text-teal-400 border border-teal-800 flex items-center justify-center">
+                <span className="material-symbols-outlined text-[19px]">edit_note</span>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-title text-sm font-bold text-white">Devamsızlık SMS Şablonu</h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                    Tüm Velilere Gidecek Mesaj
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  Mesaja ekleyeceğiniz dinamik etiketler ([Öğrenci Adı], [Okul No], [Sınıf], [Devamsızlık Türü], [Tarih]) her veli için otomatik doldurulur.
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMessageTemplate(DEFAULT_TEMPLATE);
+                if (showToast) showToast('Şablon varsayılana sıfırlandı!', 'info');
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs font-semibold transition-all self-start sm:self-auto"
+            >
+              <span className="material-symbols-outlined text-[15px] text-slate-400">restart_alt</span>
+              <span>Varsayılana Sıfırla</span>
+            </button>
+          </div>
+
+          {/* Dinamik Değişken Butonları */}
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[11px] font-semibold text-slate-300 flex items-center gap-1">
+              <span className="material-symbols-outlined text-[14px] text-teal">smart_button</span>
+              Tıklayarak Şablona Etiket Ekle:
+            </span>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {[
+                { tag: '[Ogrenci_Adi]', label: 'Öğrenci Adı' },
+                { tag: '[Okul_No]', label: 'Okul No' },
+                { tag: '[Sinif]', label: 'Sınıf' },
+                { tag: '[Devamsizlik_Turu]', label: 'Devamsızlık Türü' },
+                { tag: '[Tarih]', label: 'Tarih' },
+                { tag: '[Veli_Adi]', label: 'Veli Adı' },
+                { tag: '[Kurum_Adi]', label: 'Kurum Adı' }
+              ].map(({ tag, label }) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => handleInsertTag(tag)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-900 hover:bg-teal-950 border border-slate-700 hover:border-teal-700 text-teal-300 text-xs font-mono transition-all active:scale-95 shadow-2xs"
+                >
+                  <span className="text-teal-400 font-bold">+</span>
+                  <span className="font-semibold text-slate-200">{label}</span>
+                  <span className="text-slate-500 text-[10px]">{tag}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* İki Kolon: Şablon Yazma Alanı & Canlı Önizleme */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-1">
+            {/* Sol: Metin Düzenleme */}
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between text-[11px]">
+                <label className="font-semibold text-slate-300">Şablon Metni (Düzenlenebilir):</label>
+                <span className={`font-mono ${messageTemplate.length > 160 ? 'text-amber-400' : 'text-slate-400'}`}>
+                  {messageTemplate.length} Karakter ({Math.ceil(messageTemplate.length / 160) || 1} SMS)
+                </span>
+              </div>
+              <textarea
+                rows="3"
+                value={messageTemplate}
+                onChange={(e) => setMessageTemplate(e.target.value)}
+                className="w-full rounded-lg bg-slate-950 border border-slate-700 text-slate-100 text-xs p-3 font-body focus:ring-1 focus:ring-teal focus:border-teal outline-none transition-all leading-relaxed"
+                placeholder="SMS şablonunuzu yazın..."
+              />
+            </div>
+
+            {/* Sağ: Örnek Öğrenci Üzerinde Canlı Önizleme */}
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-semibold text-emerald-400 flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[15px]">preview</span>
+                  Canlı Önizleme (Velinin Alacağı Gerçek SMS):
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono">
+                  {sampleStudent ? `${sampleStudent.name} (${sampleStudent.class})` : 'Örnek'}
+                </span>
+              </div>
+              <div className="p-3 rounded-lg bg-slate-950/90 border border-emerald-900/50 text-xs font-mono text-emerald-300 leading-relaxed min-h-[72px] flex items-center shadow-inner">
+                {sampleStudent ? generateMessageText(sampleStudent) : 'Örnek veri yok.'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 3. İSTATİSTİK SAYAÇLARI */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -676,8 +795,16 @@ export default function AutomationStudentsView({
               </div>
             </div>
 
+            {/* Şablon Mesaj Önizlemesi */}
+            <div className="flex flex-col gap-1.5">
+              <span className="text-slate-400 text-xs font-semibold">Gönderilecek Mesaj Formatı:</span>
+              <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg text-xs font-mono text-emerald-300 leading-relaxed max-h-28 overflow-y-auto shadow-inner">
+                {sampleStudent ? generateMessageText(sampleStudent) : ''}
+              </div>
+            </div>
+
             <p className="text-xs text-slate-400 leading-relaxed">
-              Her öğrencinin devamsızlık türüne göre (<em>Öğleden Önce Yok, Öğleden Sonra Yok veya Tam Gün Yok</em>) özel mesaj metni oluşturulup velilerine iletilecektir.
+              Yukarıda ayarlanan şablon baz alınarak, her veliye kendi öğrencisinin devamsızlık türü ve okul bilgileriyle otomatik doldurulup iletilecektir.
             </p>
 
             <div className="flex items-center justify-end gap-3 pt-2">
